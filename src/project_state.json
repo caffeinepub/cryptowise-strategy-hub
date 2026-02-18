@@ -1,0 +1,172 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "CryptoWise Strategy Hub: a web app for crypto investors/traders that automates P&L forecasting, risk management/position sizing, DCA strategy planning, and market-cap-based “moon math,” with live price syncing and shareable trade plans.",
+  "architectural_notes": [
+    "Frontend to be built with React or Next.js (performance + SEO).",
+    "Tailwind CSS with a glassmorphism design aesthetic.",
+    "State management via Redux or React Context for real-time calculation updates.",
+    "Integrate CoinGecko API for price data; optionally support CoinMarketCap.",
+    "Optional: TradingView Lightweight Charts for small price previews.",
+    "Deploy to Vercel or Netlify for fast static/serverless hosting."
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- App logo mark, minimalist geometric “CW” monogram in a neon-lime-on-charcoal style with subtle glow (cryptowise-logo.dim_512x512.png)\n- Abstract dark glassmorphism background with soft gradients and faint grid, no text (cryptowise-bg.dim_1920x1080.png)",
+  "existing_features": [
+    {
+      "id": "feature-create-a-mobile-first-single-page-app-layout-for-cryptowise-strategy-hub-with-navigation-to-these-modules-smart-entry-exit-p-l-risk-management-dca-planner-moon-math-market-cap-and-future-value-projection",
+      "title": "Create a mobile-first single-page app layout for “CryptoWise Strategy Hub” with navigation to these modules: Smart Entry & Exit (P&L), Risk Management, DCA Planner, Moon Math (Market Cap), and Future Value Projection.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-the-smart-entry-exit-engine-p-l-module-with-inputs-investment-amount-usd-buy-price-sell-price-target-and-trading-fees-and-dynamic-outputs-token-quantity-net-profit-after-fees-and-roi-percentage",
+      "title": "Implement the Smart Entry & Exit Engine (P&L) module with inputs: Investment Amount (USD), Buy Price, Sell Price (Target), and Trading Fees (%), and dynamic outputs: Token Quantity, Net Profit (after fees), and ROI Percentage.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-live-price-sync-using-the-coingecko-api-so-users-can-search-select-a-coin-and-auto-fill-the-current-price-into-relevant-fields-at-minimum-the-buy-price-field-in-the-p-l-module",
+      "title": "Add live price sync using the CoinGecko API so users can search/select a coin and auto-fill the current price into relevant fields (at minimum the Buy Price field in the P&L module).",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-the-risk-management-position-sizing-module-with-inputs-entry-price-stop-loss-invalidation-point-total-capital-usd-and-risk-amount-as-a-of-total-capital-and-outputs-recommended-position-size-usd-and-risk-to-reward-r-r-ratio-given-an-optional-target-sell-price-input",
+      "title": "Implement the Risk Management & Position Sizing module with inputs: Entry Price, Stop-Loss (Invalidation Point), Total Capital (USD), and Risk Amount (as a % of total capital), and outputs: recommended position size (USD) and Risk-to-Reward (R:R) ratio given an optional Target/Sell Price input.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-the-advanced-dca-planner-module-with-an-average-down-tool-supporting-5-entry-lines-where-each-line-includes-buy-price-and-amount-usd-and-outputs-total-invested-total-tokens-accumulated-and-new-average-entry-price",
+      "title": "Implement the Advanced DCA Planner module with an Average Down tool supporting 5+ entry lines where each line includes Buy Price and Amount (USD), and outputs: total invested, total tokens accumulated, and new average entry price.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-the-moon-math-market-cap-reality-check-module-that-allows-selecting-coin-a-and-coin-b-and-calculates-the-implied-coin-a-price-if-coin-a-reached-coin-b-s-market-cap-along-with-the-implied-multiple-vs-coin-a-s-current-price",
+      "title": "Implement the “Moon Math” Market Cap Reality Check module that allows selecting Coin A and Coin B and calculates the implied Coin A price if Coin A reached Coin B’s market cap, along with the implied multiple vs Coin A’s current price.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-the-future-value-projection-module-with-inputs-for-initial-amount-recurring-monthly-buy-time-horizon-years-and-growth-rate-apr-and-outputs-including-projected-final-value-and-total-contributions",
+      "title": "Implement the Future Value Projection module with inputs for initial amount, recurring monthly buy, time horizon (years), and growth rate (APR %), and outputs including projected final value and total contributions.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-no-login-mode-with-local-storage-persistence-for-all-module-inputs-and-the-user-s-latest-computed-results-including-a-one-click-reset-clear-action",
+      "title": "Implement no-login mode with local storage persistence for all module inputs and the user’s latest computed results, including a one-click reset/clear action.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-one-click-share-feature-that-generates-a-shareable-trade-plan-image-summary-for-the-currently-active-module-at-minimum-for-the-p-l-module-and-lets-the-user-download-it-as-an-image",
+      "title": "Add a “One-Click Share” feature that generates a shareable “Trade Plan” image/summary for the currently active module (at minimum for the P&L module) and lets the user download it as an image.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-a-consistent-dark-mode-by-default-glassmorphism-ui-using-tailwind-styling-and-shadcn-components-with-a-coherent-visual-theme-colors-typography-spacing-suitable-for-a-crypto-trading-utility",
+      "title": "Apply a consistent dark-mode-by-default glassmorphism UI using Tailwind styling and Shadcn components, with a coherent visual theme (colors, typography, spacing) suitable for a crypto trading utility.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-required-generated-static-images-logo-and-background-and-reference-them-from-the-frontend-as-static-assets-under-frontend-public-assets-generated",
+      "title": "Add required generated static images (logo and background) and reference them from the frontend as static assets under frontend/public/assets/generated.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Smart Entry & Exit (P&L) calculator with token quantity, net profit, ROI, and fee support",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Live price sync via CoinGecko (and/or CoinMarketCap) to autofill current prices",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Risk management & position sizing module (stop-loss/invalidation point + risk % of capital -> position size)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Risk-to-Reward (R:R) ratio visual indicator",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Advanced DCA planner with average-down tool and support for 5+ entry points",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "“Moon Math” market cap reality check (compare Coin A vs Coin B market caps to estimate price multiple)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Future value projection calculator (compound interest and/or recurring monthly buys)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "UI/UX: Dark mode by default + mobile-first responsive layout",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "One-click share: generate a trade plan image/summary for social/Telegram sharing",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "No-login mode with local storage saving of inputs/plans",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "CryptoWise Strategy Hub",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

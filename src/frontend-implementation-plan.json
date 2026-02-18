@@ -1,0 +1,358 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "CryptoWise Hub MVP calculators (CoinGecko live pricing, glass UI, local saves, share trade cards)",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Build a mobile-first single-page layout with navigation across the five calculator modules.",
+      "acceptanceCriteria": [
+        "The app has clearly labeled navigation (tabs/side nav) to each module: P&L, Risk, DCA, Moon Math, Future Value.",
+        "Each module has its own dedicated UI section with inputs and outputs visible without page reloads.",
+        "Layout is responsive and usable on mobile widths (e.g., ~375px) and desktop widths (e.g., 1280px)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Implement single-page module switching (no full page reload) and wire navigation + per-module views into the root app; use shadcn-ui components (e.g., Tabs, Card, Button) to provide consistent navigation and layout surfaces. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/layout/AppShell.tsx",
+          "operation": "create",
+          "description": "Create a mobile-first app shell (header + main content) that hosts module navigation and a scrollable content area; use shadcn-ui layout primitives (Card, Separator) for structure. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/nav/ModuleNav.tsx",
+          "operation": "create",
+          "description": "Create a responsive module navigation component (tabs on mobile, optionally a compact side/nav on desktop) that switches active module in-app; use shadcn-ui Tabs/Button components for accessible navigation. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/modules/index.ts",
+          "operation": "create",
+          "description": "Define the module registry (IDs, labels, and component references) used by the App to render the correct calculator section."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Implement the Smart Entry & Exit (P&L) calculator with live-updating outputs and validation.",
+      "acceptanceCriteria": [
+        "Changing any P&L input updates all outputs immediately.",
+        "Token quantity, net profit, and ROI are displayed with sensible formatting (e.g., token quantity supports decimals; currency shows $ with 2 decimals; ROI shows %).",
+        "The module handles invalid/empty inputs gracefully (no crashes; outputs show 0/blank with a clear validation message)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/modules/PnLModule.tsx",
+          "operation": "create",
+          "description": "Create the P&L module UI with inputs (investment USD, buy price, sell price, fees %) and dynamic outputs (token qty, net profit after fees, ROI %); use shadcn-ui Input, Label, Card, and Alert components for form + validation messaging. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/lib/calculators/pnl.ts",
+          "operation": "create",
+          "description": "Add pure calculator logic for token quantity, net profit (after fees), and ROI with safe numeric parsing and zero/empty handling."
+        },
+        {
+          "path": "frontend/src/lib/format.ts",
+          "operation": "create",
+          "description": "Add formatting helpers for USD, percentages, and token quantity decimals to ensure consistent display across modules."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Add CoinGecko search/select and live USD price fetch to auto-fill the P&L Buy Price (with error handling).",
+      "acceptanceCriteria": [
+        "The user can search/select a coin (by name/ticker) and trigger a fetch of its current USD price from CoinGecko.",
+        "The fetched price populates the Buy Price field (and visibly indicates it came from live data).",
+        "If the API call fails or rate-limits, the UI shows an error state and still allows manual price entry."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/services/coingecko.ts",
+          "operation": "create",
+          "description": "Implement a minimal CoinGecko client (search coins, fetch current USD price, fetch market data needed by other modules) using fetch with robust error handling and rate-limit friendly messaging."
+        },
+        {
+          "path": "frontend/src/hooks/useCoinGecko.ts",
+          "operation": "create",
+          "description": "Create React Query hooks for CoinGecko search and price retrieval (caching, loading/error states) to be reused by P&L and Moon Math."
+        },
+        {
+          "path": "frontend/src/components/coins/CoinSearchSelect.tsx",
+          "operation": "create",
+          "description": "Create a coin search/select UI that queries CoinGecko and allows selecting a coin by name/ticker; use shadcn-ui Command (or Combobox-style) + Popover components for searchable selection UI. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/modules/PnLModule.tsx",
+          "operation": "modify",
+          "description": "Wire CoinSearchSelect into the P&L module to fetch current USD price and auto-fill Buy Price with a visible 'Live' indicator; include an error state while keeping manual entry available; use shadcn-ui Badge/Alert for status. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Implement Risk Management & Position Sizing with explainable outputs, R:R ratio, and validation.",
+      "acceptanceCriteria": [
+        "Entering capital and risk % produces a clear “max position size” output in USD.",
+        "Entering Entry and Stop-Loss produces a clear “risk per unit” / “% drop to stop” style breakdown (or equivalent) so the position size is explainable.",
+        "If Target/Sell Price is provided, an R:R ratio is computed and displayed both as text (e.g., 1:3) and with a simple visual indicator (e.g., segmented bar or badge).",
+        "Validation prevents nonsensical cases (e.g., stop-loss >= entry for long positions) with a user-facing message."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/modules/RiskModule.tsx",
+          "operation": "create",
+          "description": "Create the Risk module UI with inputs (entry, stop-loss, total capital, risk % and optional target) and outputs (max position size USD, explainable breakdown, R:R ratio with simple visual indicator); use shadcn-ui Input, Card, Alert, and Badge components. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/lib/calculators/risk.ts",
+          "operation": "create",
+          "description": "Add pure calculator logic for position sizing, stop distance (%), risk-per-unit style breakdown, and R:R computation with validation helpers for long-position assumptions."
+        },
+        {
+          "path": "frontend/src/components/visual/RiskRewardIndicator.tsx",
+          "operation": "create",
+          "description": "Add a simple visual indicator component for R:R ratio (e.g., segmented bar/badge-based) styled for dark glass UI; use shadcn-ui Badge and progress-like primitives where appropriate. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Implement an Advanced DCA Planner with 5+ editable entry lines, add/remove rows, and live aggregate outputs.",
+      "acceptanceCriteria": [
+        "The UI supports adding/removing DCA entry rows and works with at least 5 rows.",
+        "As entries are edited, outputs update immediately: total invested, total tokens, average entry price.",
+        "Empty rows or invalid numbers do not break the calculation; the UI prompts the user to correct them."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/modules/DCAModule.tsx",
+          "operation": "create",
+          "description": "Create the DCA module UI with a dynamic list of entry rows (buy price + USD amount), add/remove actions, and live outputs; use shadcn-ui Table (or Card list), Input, Button, and Alert components for structure and validation. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/lib/calculators/dca.ts",
+          "operation": "create",
+          "description": "Add pure calculator logic for total invested, total tokens accumulated, and weighted-average entry price, skipping invalid/empty rows safely."
+        },
+        {
+          "path": "frontend/src/components/forms/DCAEntryRow.tsx",
+          "operation": "create",
+          "description": "Create a reusable DCA entry row component with controlled inputs and per-row validation states; use shadcn-ui Input/Label components. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Implement Moon Math market cap comparison using CoinGecko data with fallbacks for missing supply/data.",
+      "acceptanceCriteria": [
+        "The user can select Coin A and Coin B (via CoinGecko search) and fetch needed data (market caps and Coin A circulating supply) to compute implied price.",
+        "The module displays: Coin A current price, Coin B market cap, implied Coin A price at Coin B market cap, and the implied multiple (e.g., 5.0x).",
+        "The UI handles missing/unsupported data from the API (e.g., supply unavailable) with a clear fallback message."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/modules/MoonMathModule.tsx",
+          "operation": "create",
+          "description": "Create Moon Math UI with Coin A and Coin B selectors, fetch required CoinGecko market data, and compute/display implied price and multiple; use shadcn-ui Card, Alert, Badge and the shared CoinSearchSelect component. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/lib/calculators/moonMath.ts",
+          "operation": "create",
+          "description": "Add pure calculator logic for implied Coin A price at Coin B market cap and implied multiple vs Coin A current price, with explicit handling for missing/zero supply."
+        },
+        {
+          "path": "frontend/src/hooks/useCoinGecko.ts",
+          "operation": "modify",
+          "description": "Extend React Query hooks to fetch the additional CoinGecko fields needed for Moon Math (market caps, circulating supply, current price) with clear error states."
+        }
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "summary": "Implement the Future Value Projection calculator with initial, monthly contributions, years, APR, and live-updating outputs.",
+      "acceptanceCriteria": [
+        "The module supports both an initial amount and an optional monthly contribution.",
+        "Outputs include at least: total contributed and projected ending value over the selected time horizon.",
+        "Changing any input updates outputs immediately and handles edge cases (0 years, 0 APR, etc.)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/modules/FutureValueModule.tsx",
+          "operation": "create",
+          "description": "Create Future Value module UI with inputs (initial, monthly, years, APR) and outputs (ending value, total contributed) that update immediately; use shadcn-ui Input, Card, and Alert components for consistent presentation and edge-case messaging. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/lib/calculators/futureValue.ts",
+          "operation": "create",
+          "description": "Add pure calculator logic for future value with optional monthly contributions and APR (monthly compounding), including edge cases (0 years/APR/monthly)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "summary": "Persist all module inputs and latest results locally (no login) with a one-click clear/reset.",
+      "acceptanceCriteria": [
+        "Refreshing the page restores the last-used values for each module from local storage.",
+        "A “Clear saved data” action removes persisted values and resets modules to defaults.",
+        "No authentication UI is present."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useLocalStorageState.ts",
+          "operation": "create",
+          "description": "Create a reusable hook for type-safe localStorage persistence with versioned keys, safe JSON parse, and a reset helper."
+        },
+        {
+          "path": "frontend/src/lib/storageKeys.ts",
+          "operation": "create",
+          "description": "Define centralized localStorage keys for each module’s persisted inputs/results to prevent collisions and simplify clearing."
+        },
+        {
+          "path": "frontend/src/components/actions/ClearSavedDataButton.tsx",
+          "operation": "create",
+          "description": "Add a one-click 'Clear saved data' action that clears all module keys and resets UI state; use shadcn-ui Button + AlertDialog for confirmation. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wire global clear/reset action into the app shell (e.g., header menu/button) and ensure each module reads/writes its persisted state using the local storage hook; use shadcn-ui DropdownMenu (or equivalent) for placement if present. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/modules/PnLModule.tsx",
+          "operation": "modify",
+          "description": "Persist P&L inputs and latest computed outputs to local storage and restore them on load using useLocalStorageState."
+        },
+        {
+          "path": "frontend/src/pages/modules/RiskModule.tsx",
+          "operation": "modify",
+          "description": "Persist Risk module inputs and latest computed outputs to local storage and restore them on load using useLocalStorageState."
+        },
+        {
+          "path": "frontend/src/pages/modules/DCAModule.tsx",
+          "operation": "modify",
+          "description": "Persist DCA module rows and latest computed outputs to local storage and restore them on load using useLocalStorageState."
+        },
+        {
+          "path": "frontend/src/pages/modules/MoonMathModule.tsx",
+          "operation": "modify",
+          "description": "Persist Moon Math selected coins and last computed outputs to local storage and restore them on load using useLocalStorageState."
+        },
+        {
+          "path": "frontend/src/pages/modules/FutureValueModule.tsx",
+          "operation": "modify",
+          "description": "Persist Future Value inputs and latest computed outputs to local storage and restore them on load using useLocalStorageState."
+        }
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "summary": "Generate a one-click shareable Trade Plan image (minimum: P&L) that downloads as PNG.",
+      "acceptanceCriteria": [
+        "The user can click a Share/Export button and receive a generated image containing the key inputs/outputs for the current module.",
+        "The generated image can be downloaded as a PNG from the browser.",
+        "The exported summary is in English and is readable on mobile (reasonable font sizes and spacing)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/package.json",
+          "operation": "modify",
+          "description": "Add a client-side DOM-to-image dependency (e.g., html-to-image or equivalent) to support PNG export from a rendered Trade Plan card."
+        },
+        {
+          "path": "frontend/src/lib/share/exportTradeCard.ts",
+          "operation": "create",
+          "description": "Implement a utility that captures a referenced Trade Plan card DOM node and triggers a PNG download with a deterministic filename."
+        },
+        {
+          "path": "frontend/src/components/share/TradePlanCard.tsx",
+          "operation": "create",
+          "description": "Create a styled, export-friendly Trade Plan card component that renders key inputs/outputs in English with mobile-readable spacing; use shadcn-ui Card/Separator/Badge for consistent look. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/share/ShareTradePlanButton.tsx",
+          "operation": "create",
+          "description": "Add a Share/Export button component that exports the current module’s Trade Plan card to PNG; use shadcn-ui Button and a loading state for export. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/modules/PnLModule.tsx",
+          "operation": "modify",
+          "description": "Wire Share/Export into the P&L module: render TradePlanCard with current inputs/outputs and enable one-click PNG download; ensure the exported content is readable on mobile."
+        }
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "summary": "Apply dark-mode-by-default glassmorphism theme with Tailwind + shadcn styling consistency across modules.",
+      "acceptanceCriteria": [
+        "The app renders in dark mode by default and maintains sufficient contrast/readability.",
+        "All modules share consistent styling (card surfaces, inputs, buttons, typography).",
+        "The glassmorphism look is evident (blurred/translucent panels over a dark background) without harming usability."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/index.html",
+          "operation": "modify",
+          "description": "Set dark mode by default by applying the dark class at the document root and ensure baseline meta/title remain correct."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Define global theme tokens and app background styling for a dark glass look (including background image usage) using existing Tailwind/shadcn conventions; avoid introducing new global stylesheet entry points."
+        },
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Tune Tailwind theme extensions as needed for a coherent crypto utility look (glass panel colors, accent neon-lime highlights, shadows/blur utilities) while keeping darkMode as class."
+        },
+        {
+          "path": "frontend/src/components/layout/GlassCard.tsx",
+          "operation": "create",
+          "description": "Create a reusable glassmorphism card wrapper (translucent surface + backdrop blur) for consistent module styling; compose shadcn-ui Card with Tailwind utility classes. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Adopt shared layout primitives (AppShell/GlassCard) so all module sections follow consistent spacing, typography, and glass surfaces; use shadcn-ui components for consistent controls. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "summary": "Add required generated static images (logo and background) under frontend/public/assets/generated and reference them in the UI.",
+      "acceptanceCriteria": [
+        "The generated images exist under frontend/public/assets/generated and are used by the UI (e.g., app header logo and subtle page background).",
+        "Images are loaded directly by the frontend (not served via backend endpoints)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/public/assets/generated/cryptowise-logo.dim_512x512.png",
+          "operation": "create",
+          "description": "Add the generated app logo asset at frontend/public/assets/generated/cryptowise-logo.dim_512x512.png and ensure it is referenced by the header/branding UI."
+        },
+        {
+          "path": "frontend/public/assets/generated/cryptowise-bg.dim_1920x1080.png",
+          "operation": "create",
+          "description": "Add the generated background asset at frontend/public/assets/generated/cryptowise-bg.dim_1920x1080.png and ensure it is referenced by global page background styling."
+        },
+        {
+          "path": "frontend/src/components/branding/AppLogo.tsx",
+          "operation": "create",
+          "description": "Create a small branding component that renders the logo image from frontend/public/assets/generated/cryptowise-logo.dim_512x512.png with accessible alt text and appropriate sizing."
+        },
+        {
+          "path": "frontend/src/components/layout/AppShell.tsx",
+          "operation": "modify",
+          "description": "Wire AppLogo into the app header and ensure the overall layout complements the background image for a subtle glassmorphism look."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Reference frontend/public/assets/generated/cryptowise-bg.dim_1920x1080.png as the subtle app background (e.g., on body/root container) while maintaining readability and performance."
+        }
+      ]
+    }
+  ]
+}

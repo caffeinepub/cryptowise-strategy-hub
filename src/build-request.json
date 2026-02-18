@@ -1,0 +1,241 @@
+{
+  "kind": "build_request",
+  "title": "Build CryptoWise Strategy Hub MVP calculators with live CoinGecko pricing, dark glass UI, local saves, and shareable trade cards",
+  "projectName": "CryptoWise Hub",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Create a mobile-first single-page app layout for “CryptoWise Strategy Hub” with navigation to these modules: Smart Entry & Exit (P&L), Risk Management, DCA Planner, Moon Math (Market Cap), and Future Value Projection.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "CryptoWise is a specialized Web Application designed for cryptocurrency investors and traders... automate Profit/Loss (P&L) forecasting, Risk Management, and Portfolio Strategy (DCA).",
+          "Core Functional Modules A...B...C...D...Future Value Projection"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The app has clearly labeled navigation (tabs/side nav) to each module: P&L, Risk, DCA, Moon Math, Future Value.",
+        "Each module has its own dedicated UI section with inputs and outputs visible without page reloads.",
+        "Layout is responsive and usable on mobile widths (e.g., ~375px) and desktop widths (e.g., 1280px)."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Implement the Smart Entry & Exit Engine (P&L) module with inputs: Investment Amount (USD), Buy Price, Sell Price (Target), and Trading Fees (%), and dynamic outputs: Token Quantity, Net Profit (after fees), and ROI Percentage.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "A. Smart Entry & Exit Engine (Profit/Loss)\nInput Fields: Investment Amount ($), Buy Price, Sell Price (Target), and Trading Fees (%).\nDynamic Outputs: * Token Quantity... Net Profit... ROI Percentage..."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Changing any P&L input updates all outputs immediately.",
+        "Token quantity, net profit, and ROI are displayed with sensible formatting (e.g., token quantity supports decimals; currency shows $ with 2 decimals; ROI shows %).",
+        "The module handles invalid/empty inputs gracefully (no crashes; outputs show 0/blank with a clear validation message)."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Add live price sync using the CoinGecko API so users can search/select a coin and auto-fill the current price into relevant fields (at minimum the Buy Price field in the P&L module).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Live Price Sync: Integration with CoinGecko/CoinMarketCap API to pull current prices so users don't have to type them manually.",
+          "API: * Coingecko API for price data."
+        ]
+      },
+      "acceptanceCriteria": [
+        "The user can search/select a coin (by name/ticker) and trigger a fetch of its current USD price from CoinGecko.",
+        "The fetched price populates the Buy Price field (and visibly indicates it came from live data).",
+        "If the API call fails or rate-limits, the UI shows an error state and still allows manual price entry."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Implement the Risk Management & Position Sizing module with inputs: Entry Price, Stop-Loss (Invalidation Point), Total Capital (USD), and Risk Amount (as a % of total capital), and outputs: recommended position size (USD) and Risk-to-Reward (R:R) ratio given an optional Target/Sell Price input.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "B. Risk Management & Position Sizing\nStop-Loss Integration... Risk Amount... (e.g., 1%).\nResult: The app tells the user exactly how much money to put into that specific trade...\nRisk-to-Reward (R:R) Ratio: Visual indicator (e.g., 1:3 ratio)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Entering capital and risk % produces a clear “max position size” output in USD.",
+        "Entering Entry and Stop-Loss produces a clear “risk per unit” / “% drop to stop” style breakdown (or equivalent) so the position size is explainable.",
+        "If Target/Sell Price is provided, an R:R ratio is computed and displayed both as text (e.g., 1:3) and with a simple visual indicator (e.g., segmented bar or badge).",
+        "Validation prevents nonsensical cases (e.g., stop-loss >= entry for long positions) with a user-facing message."
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Implement the Advanced DCA Planner module with an Average Down tool supporting 5+ entry lines where each line includes Buy Price and Amount (USD), and outputs: total invested, total tokens accumulated, and new average entry price.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "C. Advanced DCA (Dollar Cost Averaging) Planner\nAverage Down Tool... calculates the new average entry price...\nMultiple Entry Support: Capability to add 5+ different buy-in points to see the cumulative average."
+        ]
+      },
+      "acceptanceCriteria": [
+        "The UI supports adding/removing DCA entry rows and works with at least 5 rows.",
+        "As entries are edited, outputs update immediately: total invested, total tokens, average entry price.",
+        "Empty rows or invalid numbers do not break the calculation; the UI prompts the user to correct them."
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Implement the “Moon Math” Market Cap Reality Check module that allows selecting Coin A and Coin B and calculates the implied Coin A price if Coin A reached Coin B’s market cap, along with the implied multiple vs Coin A’s current price.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "D. \"Moon Math\" & Market Cap Reality Check\nMarket Cap Comparison: Compare \"Coin A\" to \"Coin B.\"\nExample: \"If $SHIB reaches the Market Cap of $DOGE, its price would be $X (a 5x increase).\""
+        ]
+      },
+      "acceptanceCriteria": [
+        "The user can select Coin A and Coin B (via CoinGecko search) and fetch needed data (market caps and Coin A circulating supply) to compute implied price.",
+        "The module displays: Coin A current price, Coin B market cap, implied Coin A price at Coin B market cap, and the implied multiple (e.g., 5.0x).",
+        "The UI handles missing/unsupported data from the API (e.g., supply unavailable) with a clear fallback message."
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "text": "Implement the Future Value Projection module with inputs for initial amount, recurring monthly buy, time horizon (years), and growth rate (APR %), and outputs including projected final value and total contributions.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Future Value Projection: Calculator for long-term compound interest or monthly recurring buys."
+        ]
+      },
+      "acceptanceCriteria": [
+        "The module supports both an initial amount and an optional monthly contribution.",
+        "Outputs include at least: total contributed and projected ending value over the selected time horizon.",
+        "Changing any input updates outputs immediately and handles edge cases (0 years, 0 APR, etc.)."
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "text": "Implement no-login mode with local storage persistence for all module inputs and the user’s latest computed results, including a one-click reset/clear action.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "No Login Required... (Local Storage for saving data)."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Refreshing the page restores the last-used values for each module from local storage.",
+        "A “Clear saved data” action removes persisted values and resets modules to defaults.",
+        "No authentication UI is present."
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "text": "Add a “One-Click Share” feature that generates a shareable “Trade Plan” image/summary for the currently active module (at minimum for the P&L module) and lets the user download it as an image.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "One-Click Share: A feature to generate a \"Trade Plan\" image/summary to share on social media or Telegram."
+        ]
+      },
+      "acceptanceCriteria": [
+        "The user can click a Share/Export button and receive a generated image containing the key inputs/outputs for the current module.",
+        "The generated image can be downloaded as a PNG from the browser.",
+        "The exported summary is in English and is readable on mobile (reasonable font sizes and spacing)."
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "text": "Apply a consistent dark-mode-by-default glassmorphism UI using Tailwind styling and Shadcn components, with a coherent visual theme (colors, typography, spacing) suitable for a crypto trading utility.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Styling: Tailwind CSS with a Glassmorphism design (modern, sleek crypto aesthetic).",
+          "Dark Mode by Default: Essential for the crypto community.",
+          "Use English for any user-facing text in the build request."
+        ]
+      },
+      "acceptanceCriteria": [
+        "The app renders in dark mode by default and maintains sufficient contrast/readability.",
+        "All modules share consistent styling (card surfaces, inputs, buttons, typography).",
+        "The glassmorphism look is evident (blurred/translucent panels over a dark background) without harming usability."
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "text": "Add required generated static images (logo and background) and reference them from the frontend as static assets under frontend/public/assets/generated.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "CryptoWise Strategy Hub",
+          "modern, sleek crypto aesthetic"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The generated images exist under frontend/public/assets/generated and are used by the UI (e.g., app header logo and subtle page background).",
+        "Images are loaded directly by the frontend (not served via backend endpoints)."
+      ]
+    }
+  ],
+  "constraints": [
+    "Use English for all user-facing UI text.",
+    "Frontend must use the provided React + TypeScript + Tailwind + Shadcn + React Query template (no Next.js).",
+    "Do not edit any files under the immutable paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
+    "Backend must remain a single Motoko actor if backend changes are added later.",
+    "No third-party authentication flows; the app must work without login."
+  ],
+  "nonGoals": [
+    "TradingView Lightweight Charts integration (optional in spec; exclude from MVP unless explicitly requested later).",
+    "CoinMarketCap integration (CoinGecko-only is sufficient for this build request unless explicitly requested later).",
+    "Deployment to Vercel/Netlify (not part of this build request and not supported by the platform).",
+    "Multi-user accounts, cloud databases, or real-time features (websockets/chat/push)."
+  ],
+  "imageRequirements": {
+    "required": [
+      "App logo mark, minimalist geometric “CW” monogram in a neon-lime-on-charcoal style with subtle glow (cryptowise-logo.dim_512x512.png)",
+      "Abstract dark glassmorphism background with soft gradients and faint grid, no text (cryptowise-bg.dim_1920x1080.png)"
+    ],
+    "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
+  }
+}

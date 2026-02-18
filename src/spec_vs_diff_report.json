@@ -1,0 +1,101 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-18T03:10:32.055Z",
+  "summary": "Diff adds an SPA shell with tab navigation, glassmorphism-styled layout, calculators for P&L/DCA/MoonMath/FutureValue, CoinGecko search/price hooks, localStorage state hook, and share/export UI components. However, several requested end-to-end behaviors (module UIs wiring, persistence across modules, share wired to P&L, CoinGecko error/indicator handling, and inclusion of generated image assets) are not evidenced in the provided diff summary, and some unrequested/possibly conflicting features (Internet Identity/auth infrastructure and a caffeine.ai promotional footer) appear.",
+  "missing_requirements": [
+    {
+      "id": "REQ-3",
+      "requirement": "Add live price sync using the CoinGecko API so users can search/select a coin and auto-fill the current price into relevant fields (at minimum the Buy Price field in the P&L module), including visible 'live' indication and error state fallback.",
+      "reason": "While CoinGecko hooks and a coin search select component exist, the diff summary does not show the P&L module UI wiring that populates the Buy Price field from fetched live price, nor any visible 'live data' indicator or explicit error-state handling that still allows manual entry.",
+      "evidence": [
+        "frontend/src/hooks/useCoinGecko.ts",
+        "frontend/src/components/coins/CoinSearchSelect.tsx"
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "requirement": "Implement no-login mode with local storage persistence for all module inputs and latest computed results, including a one-click reset/clear action.",
+      "reason": "A generic localStorage hook and a clear-data button exist, but the diff summary does not show any module actually using persisted state for its inputs/results (restore-on-refresh per module).",
+      "evidence": [
+        "frontend/src/hooks/useLocalStorageState.ts",
+        "frontend/src/components/actions/ClearSavedDataButton.tsx"
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "requirement": "Add a One-Click Share feature that generates a shareable Trade Plan image/summary for the currently active module (at minimum for the P&L module) and lets the user download it as an image.",
+      "reason": "Share/export components exist, but the diff summary does not show them integrated into the P&L module (or other modules) with the required key inputs/outputs rendered into the exported card for the active module.",
+      "evidence": [
+        "frontend/src/components/share/ShareTradePlanButton.tsx",
+        "frontend/src/components/share/TradePlanCard.tsx"
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "requirement": "Add required generated static images (logo and background) under frontend/public/assets/generated and reference them from the frontend.",
+      "reason": "UI references the expected asset paths, but the diff summary does not include the actual image files under frontend/public/assets/generated, so their existence cannot be verified from the provided diff.",
+      "evidence": [
+        "frontend/src/components/branding/AppLogo.tsx",
+        "frontend/src/components/layout/AppShell.tsx"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Promotional footer link and branding for caffeine.ai ('Built with ... using caffeine.ai').",
+      "reason": "Not requested in the BuildRequest requirements/AC; adds external promotional content to the UI.",
+      "evidence": [
+        "frontend/src/components/layout/AppShell.tsx"
+      ]
+    },
+    {
+      "description": "Internet Identity / authentication infrastructure (hooks for identity and actor creation).",
+      "reason": "BuildRequest specifies the app must work without login and disallows third-party authentication flows; the diff includes Internet Identity-related code paths.",
+      "evidence": [
+        "frontend/src/hooks/useInternetIdentity.ts",
+        "frontend/src/hooks/useActor.ts"
+      ]
+    }
+  ],
+  "confidence": 0.62,
+  "changed_files": [
+    "all_files_summary.json",
+    "backend/main.mo",
+    "frontend-file-summaries.txt",
+    "frontend/index.css",
+    "frontend/index.html",
+    "frontend/src/App.tsx",
+    "frontend/src/components/actions/ClearSavedDataButton.tsx",
+    "frontend/src/components/branding/AppLogo.tsx",
+    "frontend/src/components/coins/CoinSearchSelect.tsx",
+    "frontend/src/components/forms/DCAEntryRow.tsx",
+    "frontend/src/components/layout/AppShell.tsx",
+    "frontend/src/components/layout/GlassCard.tsx",
+    "frontend/src/components/share/ShareTradePlanButton.tsx",
+    "frontend/src/components/share/TradePlanCard.tsx",
+    "frontend/src/components/visual/RiskRewardIndicator.tsx",
+    "frontend/src/hooks/useActor.ts",
+    "frontend/src/hooks/useCoinGecko.ts",
+    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/hooks/useLocalStorageState.ts",
+    "frontend/src/index.css",
+    "frontend/src/lib/calculators/dca.ts",
+    "frontend/src/lib/calculators/futureValue.ts",
+    "frontend/src/lib/calculators/moonMath.ts",
+    "frontend/src/lib/calculators/pnl.ts",
+    "frontend/src/lib/calculators/risk.ts",
+    "frontend/src/lib/format.ts",
+    "frontend/src/lib/storageKeys.ts",
+    "frontend/src/lib/utils.ts",
+    "frontend/src/main.tsx",
+    "frontend/src/pages/modules/DCAModule.tsx",
+    "frontend/src/pages/modules/FutureValueModule.tsx",
+    "frontend/src/pages/modules/MoonMathModule.tsx",
+    "frontend/src/pages/modules/PnLModule.tsx",
+    "frontend/src/pages/modules/RiskModule.tsx",
+    "frontend/src/services/coingecko.ts",
+    "frontend/tailwind.config.js",
+    "project_state.json"
+  ]
+}
