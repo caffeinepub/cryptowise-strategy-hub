@@ -10,7 +10,33 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export interface _SERVICE {}
+export interface Cashflow { 'year' : bigint, 'amount' : number }
+export interface FutureValueResult {
+  'afterTaxFutureValue' : number,
+  'principalWithoutInterest' : number,
+  'preTaxFutureValue' : number,
+  'realFutureValue' : number,
+  'nominalFutureValue' : number,
+}
+export interface Investment {
+  'inflationRate' : [] | [number],
+  'compoundingFrequency' : [] | [bigint],
+  'cashflows' : Array<Cashflow>,
+  'interestRate' : number,
+  'initialInvestment' : number,
+  'years' : bigint,
+  'taxRate' : [] | [number],
+}
+export interface _SERVICE {
+  'futureValue' : ActorMethod<[Investment], FutureValueResult>,
+  'getValidTextEntries' : ActorMethod<
+    [Array<string>, string, string],
+    Array<string>
+  >,
+  'isPositiveNumber' : ActorMethod<[bigint], boolean>,
+  'isTextValid' : ActorMethod<[string], boolean>,
+  'isValidEmail' : ActorMethod<[string], boolean>,
+}
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];
 export declare const idlFactory: IDL.InterfaceFactory;

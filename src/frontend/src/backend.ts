@@ -89,10 +89,136 @@ export class ExternalBlob {
         return this;
     }
 }
-export interface backendInterface {
+export interface Investment {
+    inflationRate?: number;
+    compoundingFrequency?: bigint;
+    cashflows: Array<Cashflow>;
+    interestRate: number;
+    initialInvestment: number;
+    years: bigint;
+    taxRate?: number;
 }
+export interface FutureValueResult {
+    afterTaxFutureValue: number;
+    principalWithoutInterest: number;
+    preTaxFutureValue: number;
+    realFutureValue: number;
+    nominalFutureValue: number;
+}
+export interface Cashflow {
+    year: bigint;
+    amount: number;
+}
+export interface backendInterface {
+    futureValue(investment: Investment): Promise<FutureValueResult>;
+    getValidTextEntries(entries: Array<string>, arg1: string, pattern: string): Promise<Array<string>>;
+    isPositiveNumber(number: bigint): Promise<boolean>;
+    isTextValid(input: string): Promise<boolean>;
+    isValidEmail(email: string): Promise<boolean>;
+}
+import type { Cashflow as _Cashflow, Investment as _Investment } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
+    async futureValue(arg0: Investment): Promise<FutureValueResult> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.futureValue(to_candid_Investment_n1(this._uploadFile, this._downloadFile, arg0));
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.futureValue(to_candid_Investment_n1(this._uploadFile, this._downloadFile, arg0));
+            return result;
+        }
+    }
+    async getValidTextEntries(arg0: Array<string>, arg1: string, arg2: string): Promise<Array<string>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getValidTextEntries(arg0, arg1, arg2);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getValidTextEntries(arg0, arg1, arg2);
+            return result;
+        }
+    }
+    async isPositiveNumber(arg0: bigint): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.isPositiveNumber(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.isPositiveNumber(arg0);
+            return result;
+        }
+    }
+    async isTextValid(arg0: string): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.isTextValid(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.isTextValid(arg0);
+            return result;
+        }
+    }
+    async isValidEmail(arg0: string): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.isValidEmail(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.isValidEmail(arg0);
+            return result;
+        }
+    }
+}
+function to_candid_Investment_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Investment): _Investment {
+    return to_candid_record_n2(_uploadFile, _downloadFile, value);
+}
+function to_candid_record_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    inflationRate?: number;
+    compoundingFrequency?: bigint;
+    cashflows: Array<Cashflow>;
+    interestRate: number;
+    initialInvestment: number;
+    years: bigint;
+    taxRate?: number;
+}): {
+    inflationRate: [] | [number];
+    compoundingFrequency: [] | [bigint];
+    cashflows: Array<_Cashflow>;
+    interestRate: number;
+    initialInvestment: number;
+    years: bigint;
+    taxRate: [] | [number];
+} {
+    return {
+        inflationRate: value.inflationRate ? candid_some(value.inflationRate) : candid_none(),
+        compoundingFrequency: value.compoundingFrequency ? candid_some(value.compoundingFrequency) : candid_none(),
+        cashflows: value.cashflows,
+        interestRate: value.interestRate,
+        initialInvestment: value.initialInvestment,
+        years: value.years,
+        taxRate: value.taxRate ? candid_some(value.taxRate) : candid_none()
+    };
 }
 export interface CreateActorOptions {
     agent?: Agent;

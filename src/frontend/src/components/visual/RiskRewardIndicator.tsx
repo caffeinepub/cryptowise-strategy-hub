@@ -6,9 +6,9 @@ interface RiskRewardIndicatorProps {
 
 export function RiskRewardIndicator({ ratio }: RiskRewardIndicatorProps) {
   const getColor = (ratio: number) => {
-    if (ratio >= 3) return 'bg-green-500';
-    if (ratio >= 2) return 'bg-yellow-500';
-    return 'bg-red-500';
+    if (ratio >= 3) return 'bg-primary';
+    if (ratio >= 2) return 'bg-accent';
+    return 'bg-muted-foreground';
   };
 
   const getMessage = (ratio: number) => {
@@ -32,7 +32,7 @@ export function RiskRewardIndicator({ ratio }: RiskRewardIndicatorProps) {
           <span className="text-xs text-muted-foreground w-12">Risk</span>
           <div className="flex-1 h-6 bg-muted rounded-sm overflow-hidden flex">
             <div 
-              className="bg-red-500/70 h-full"
+              className="bg-muted-foreground/70 h-full"
               style={{ width: `${riskWidth}%` }}
             />
           </div>
@@ -43,7 +43,7 @@ export function RiskRewardIndicator({ ratio }: RiskRewardIndicatorProps) {
           <span className="text-xs text-muted-foreground w-12">Reward</span>
           <div className="flex-1 h-6 bg-muted rounded-sm overflow-hidden flex">
             <div 
-              className="bg-green-500/70 h-full"
+              className="bg-primary/70 h-full"
               style={{ width: `${rewardWidth}%` }}
             />
           </div>

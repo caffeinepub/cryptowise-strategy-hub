@@ -8,10 +8,71 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
-export const idlService = IDL.Service({});
+export const Cashflow = IDL.Record({
+  'year' : IDL.Nat,
+  'amount' : IDL.Float64,
+});
+export const Investment = IDL.Record({
+  'inflationRate' : IDL.Opt(IDL.Float64),
+  'compoundingFrequency' : IDL.Opt(IDL.Nat),
+  'cashflows' : IDL.Vec(Cashflow),
+  'interestRate' : IDL.Float64,
+  'initialInvestment' : IDL.Float64,
+  'years' : IDL.Nat,
+  'taxRate' : IDL.Opt(IDL.Float64),
+});
+export const FutureValueResult = IDL.Record({
+  'afterTaxFutureValue' : IDL.Float64,
+  'principalWithoutInterest' : IDL.Float64,
+  'preTaxFutureValue' : IDL.Float64,
+  'realFutureValue' : IDL.Float64,
+  'nominalFutureValue' : IDL.Float64,
+});
+
+export const idlService = IDL.Service({
+  'futureValue' : IDL.Func([Investment], [FutureValueResult], ['query']),
+  'getValidTextEntries' : IDL.Func(
+      [IDL.Vec(IDL.Text), IDL.Text, IDL.Text],
+      [IDL.Vec(IDL.Text)],
+      ['query'],
+    ),
+  'isPositiveNumber' : IDL.Func([IDL.Int], [IDL.Bool], []),
+  'isTextValid' : IDL.Func([IDL.Text], [IDL.Bool], []),
+  'isValidEmail' : IDL.Func([IDL.Text], [IDL.Bool], []),
+});
 
 export const idlInitArgs = [];
 
-export const idlFactory = ({ IDL }) => { return IDL.Service({}); };
+export const idlFactory = ({ IDL }) => {
+  const Cashflow = IDL.Record({ 'year' : IDL.Nat, 'amount' : IDL.Float64 });
+  const Investment = IDL.Record({
+    'inflationRate' : IDL.Opt(IDL.Float64),
+    'compoundingFrequency' : IDL.Opt(IDL.Nat),
+    'cashflows' : IDL.Vec(Cashflow),
+    'interestRate' : IDL.Float64,
+    'initialInvestment' : IDL.Float64,
+    'years' : IDL.Nat,
+    'taxRate' : IDL.Opt(IDL.Float64),
+  });
+  const FutureValueResult = IDL.Record({
+    'afterTaxFutureValue' : IDL.Float64,
+    'principalWithoutInterest' : IDL.Float64,
+    'preTaxFutureValue' : IDL.Float64,
+    'realFutureValue' : IDL.Float64,
+    'nominalFutureValue' : IDL.Float64,
+  });
+  
+  return IDL.Service({
+    'futureValue' : IDL.Func([Investment], [FutureValueResult], ['query']),
+    'getValidTextEntries' : IDL.Func(
+        [IDL.Vec(IDL.Text), IDL.Text, IDL.Text],
+        [IDL.Vec(IDL.Text)],
+        ['query'],
+      ),
+    'isPositiveNumber' : IDL.Func([IDL.Int], [IDL.Bool], []),
+    'isTextValid' : IDL.Func([IDL.Text], [IDL.Bool], []),
+    'isValidEmail' : IDL.Func([IDL.Text], [IDL.Bool], []),
+  });
+};
 
 export const init = ({ IDL }) => { return []; };

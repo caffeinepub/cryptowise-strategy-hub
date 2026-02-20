@@ -4,6 +4,9 @@ export const STORAGE_KEYS = {
   DCA: 'cryptowise_dca_v1',
   MOONMATH: 'cryptowise_moonmath_v1',
   FUTURE_VALUE: 'cryptowise_future_value_v1',
+  FUTURE_VALUE_INFLATION_RATE: 'cryptowise_future_value_inflation_rate_v1',
+  FUTURE_VALUE_TAX_RATE: 'cryptowise_future_value_tax_rate_v1',
+  DECISION: 'cryptowise_decision_v1',
 } as const;
 
 export function clearAllStorageKeys() {

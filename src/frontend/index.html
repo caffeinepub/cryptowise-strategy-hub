@@ -1,8 +1,23 @@
 <html lang='en' class='dark'>
     <head>
         <meta charset='UTF-8' />
-        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+        <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes' />
+        <meta name='theme-color' content='#0a0a0a' />
         <title>CryptoWise Strategy Hub - Beyond the Calculator</title>
+        <meta name='description' content='Professional crypto trading calculators for P&L, risk management, DCA planning, market cap analysis, and future value projections. Data-driven investing tools.' />
+        
+        <!-- Open Graph / Social Media -->
+        <meta property='og:type' content='website' />
+        <meta property='og:title' content='CryptoWise Strategy Hub - Professional Crypto Trading Tools' />
+        <meta property='og:description' content='Calculate P&L, manage risk, plan DCA strategies, and project portfolio growth with professional crypto trading calculators.' />
+        <meta property='og:image' content='/assets/generated/cryptowise-logo.dim_512x512.png' />
+        
+        <!-- Twitter Card -->
+        <meta name='twitter:card' content='summary_large_image' />
+        <meta name='twitter:title' content='CryptoWise Strategy Hub - Professional Crypto Trading Tools' />
+        <meta name='twitter:description' content='Calculate P&L, manage risk, plan DCA strategies, and project portfolio growth with professional crypto trading calculators.' />
+        <meta name='twitter:image' content='/assets/generated/cryptowise-logo.dim_512x512.png' />
+        
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
@@ -10,5 +25,19 @@
     <body>
         <div id='root'></div>
         <script type='module' src='/src/main.tsx'></script>
+        <script>
+            // Register service worker for offline support
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/src/service-worker.ts', { type: 'module' })
+                        .then(registration => {
+                            console.log('Service Worker registered:', registration);
+                        })
+                        .catch(error => {
+                            console.log('Service Worker registration failed:', error);
+                        });
+                });
+            }
+        </script>
     </body>
 </html>

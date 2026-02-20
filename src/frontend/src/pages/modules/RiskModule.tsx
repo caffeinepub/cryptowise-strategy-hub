@@ -8,9 +8,11 @@ import { ShareTradePlanButton } from '@/components/share/ShareTradePlanButton';
 import { TradePlanCard } from '@/components/share/TradePlanCard';
 import { RiskRewardIndicator } from '@/components/visual/RiskRewardIndicator';
 import { useLocalStorageState } from '@/hooks/useLocalStorageState';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { STORAGE_KEYS } from '@/lib/storageKeys';
 import { calculateRisk } from '@/lib/calculators/risk';
 import { formatUSD, formatPercent, formatNumber } from '@/lib/format';
+import { SEO_CONFIG } from '@/lib/seo';
 import { Shield, AlertCircle } from 'lucide-react';
 
 interface RiskState {
@@ -32,6 +34,8 @@ const defaultState: RiskState = {
 export function RiskModule() {
   const [state, setState] = useLocalStorageState(STORAGE_KEYS.RISK, defaultState);
   const cardRef = useRef<HTMLDivElement | null>(null);
+  
+  usePageMeta(SEO_CONFIG.risk);
 
   const outputs = calculateRisk({
     entryPrice: parseFloat(state.entryPrice) || 0,
@@ -45,22 +49,22 @@ export function RiskModule() {
   const hasInvalidStopLoss = parseFloat(state.stopLoss) >= parseFloat(state.entryPrice) && state.stopLoss && state.entryPrice;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <GlassCard>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Shield className="w-5 h-5" />
+        <CardHeader className="px-4 sm:px-6 py-4 sm:py-6">
+          <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <Shield className="w-4 h-4 sm:w-5 sm:h-5" />
             Risk Management & Position Sizing
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-xs sm:text-sm">
             Calculate your optimal position size based on risk tolerance
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4 sm:space-y-6 px-4 sm:px-6 pb-4 sm:pb-6">
           {/* Inputs */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div className="space-y-2">
-              <Label htmlFor="entryPrice">Entry Price ($)</Label>
+              <Label htmlFor="entryPrice" className="text-xs sm:text-sm">Entry Price ($)</Label>
               <Input
                 id="entryPrice"
                 type="number"
@@ -68,11 +72,12 @@ export function RiskModule() {
                 step="0.00000001"
                 value={state.entryPrice}
                 onChange={(e) => setState(prev => ({ ...prev, entryPrice: e.target.value }))}
+                className="h-9 sm:h-10 text-sm"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="stopLoss">Stop-Loss / Invalidation Point ($)</Label>
+              <Label htmlFor="stopLoss" className="text-xs sm:text-sm">Stop-Loss / Invalidation Point ($)</Label>
               <Input
                 id="stopLoss"
                 type="number"
@@ -80,22 +85,24 @@ export function RiskModule() {
                 step="0.00000001"
                 value={state.stopLoss}
                 onChange={(e) => setState(prev => ({ ...prev, stopLoss: e.target.value }))}
+                className="h-9 sm:h-10 text-sm"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="totalCapital">Total Capital ($)</Label>
+              <Label htmlFor="totalCapital" className="text-xs sm:text-sm">Total Capital ($)</Label>
               <Input
                 id="totalCapital"
                 type="number"
                 placeholder="10000"
                 value={state.totalCapital}
                 onChange={(e) => setState(prev => ({ ...prev, totalCapital: e.target.value }))}
+                className="h-9 sm:h-10 text-sm"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="riskPercent">Risk Amount (% of Capital)</Label>
+              <Label htmlFor="riskPercent" className="text-xs sm:text-sm">Risk Amount (% of Capital)</Label>
               <Input
                 id="riskPercent"
                 type="number"
@@ -103,11 +110,12 @@ export function RiskModule() {
                 step="0.1"
                 value={state.riskPercent}
                 onChange={(e) => setState(prev => ({ ...prev, riskPercent: e.target.value }))}
+                className="h-9 sm:h-10 text-sm"
               />
             </div>
 
-            <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="targetPrice">Target / Sell Price ($ - Optional)</Label>
+            <div className="space-y-2 sm:col-span-2">
+              <Label htmlFor="targetPrice" className="text-xs sm:text-sm">Target / Sell Price ($ - Optional)</Label>
               <Input
                 id="targetPrice"
                 type="number"
@@ -115,6 +123,7 @@ export function RiskModule() {
                 step="0.00000001"
                 value={state.targetPrice}
                 onChange={(e) => setState(prev => ({ ...prev, targetPrice: e.target.value }))}
+                className="h-9 sm:h-10 text-sm"
               />
             </div>
           </div>
@@ -123,8 +132,8 @@ export function RiskModule() {
           {hasInvalidStopLoss && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
-                Stop-loss must be below entry price for a long position
+              <AlertDescription className="text-xs sm:text-sm">
+                Stop-loss must be below entry price for long positions
               </AlertDescription>
             </Alert>
           )}
@@ -132,29 +141,32 @@ export function RiskModule() {
           {/* Outputs */}
           {isValid && !hasInvalidStopLoss ? (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-border/50">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 pt-4 border-t border-border/50">
                 <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Max Position Size</p>
-                  <p className="text-2xl font-bold text-primary">{formatUSD(outputs.positionSize)}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Position Size</p>
+                  <p className="text-xl sm:text-2xl font-bold text-primary">{formatUSD(outputs.positionSize)}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Stop Distance</p>
-                  <p className="text-2xl font-bold">{formatPercent(outputs.stopDistancePercent)}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Stop Distance</p>
+                  <p className="text-xl sm:text-2xl font-bold">{formatPercent(outputs.stopDistancePercent)}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Risk:Reward</p>
+                  <p className="text-xl sm:text-2xl font-bold text-green-500">
+                    {outputs.riskRewardRatio ? `1:${formatNumber(outputs.riskRewardRatio, 2)}` : 'N/A'}
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Potential Profit</p>
+                  <p className="text-xl sm:text-2xl font-bold text-green-500">
+                    {outputs.potentialProfit ? formatUSD(outputs.potentialProfit) : 'N/A'}
+                  </p>
                 </div>
               </div>
 
-              {outputs.riskRewardRatio !== null && (
-                <div className="space-y-4 pt-4 border-t border-border/50">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <p className="text-sm text-muted-foreground">Risk:Reward Ratio</p>
-                      <p className="text-2xl font-bold">1:{formatNumber(outputs.riskRewardRatio, 2)}</p>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-sm text-muted-foreground">Potential Profit</p>
-                      <p className="text-2xl font-bold text-green-500">{formatUSD(outputs.potentialProfit!)}</p>
-                    </div>
-                  </div>
+              {/* R:R Indicator */}
+              {outputs.riskRewardRatio && (
+                <div className="pt-2">
                   <RiskRewardIndicator ratio={outputs.riskRewardRatio} />
                 </div>
               )}
@@ -167,7 +179,7 @@ export function RiskModule() {
           ) : !hasInvalidStopLoss && (
             <Alert>
               <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
+              <AlertDescription className="text-xs sm:text-sm">
                 Enter valid values to see your risk calculation
               </AlertDescription>
             </Alert>
@@ -188,9 +200,8 @@ export function RiskModule() {
               { label: 'Risk %', value: `${state.riskPercent}%` },
               { label: 'Position Size', value: formatUSD(outputs.positionSize), highlight: true },
               { label: 'Stop Distance', value: formatPercent(outputs.stopDistancePercent) },
-              ...(outputs.riskRewardRatio !== null ? [
-                { label: 'R:R Ratio', value: `1:${formatNumber(outputs.riskRewardRatio, 2)}`, highlight: true },
-              ] : []),
+              ...(outputs.riskRewardRatio ? [{ label: 'R:R Ratio', value: `1:${formatNumber(outputs.riskRewardRatio, 2)}`, highlight: true }] : []),
+              ...(outputs.potentialProfit ? [{ label: 'Potential Profit', value: formatUSD(outputs.potentialProfit) }] : []),
             ]}
           />
         </div>

@@ -15,8 +15,8 @@ interface DCAEntryRowProps {
 export function DCAEntryRow({ entry, index, onUpdate, onRemove, canRemove }: DCAEntryRowProps) {
   return (
     <div className="flex items-end gap-2">
-      <div className="flex-1 space-y-2">
-        <Label htmlFor={`price-${entry.id}`} className="text-xs">
+      <div className="flex-1 space-y-1.5 sm:space-y-2">
+        <Label htmlFor={`price-${entry.id}`} className="text-[10px] sm:text-xs">
           Entry #{index + 1} - Buy Price ($)
         </Label>
         <Input
@@ -26,10 +26,11 @@ export function DCAEntryRow({ entry, index, onUpdate, onRemove, canRemove }: DCA
           step="0.00000001"
           value={entry.buyPrice || ''}
           onChange={(e) => onUpdate(entry.id, 'buyPrice', parseFloat(e.target.value) || 0)}
+          className="h-9 sm:h-10 text-sm"
         />
       </div>
-      <div className="flex-1 space-y-2">
-        <Label htmlFor={`amount-${entry.id}`} className="text-xs">
+      <div className="flex-1 space-y-1.5 sm:space-y-2">
+        <Label htmlFor={`amount-${entry.id}`} className="text-[10px] sm:text-xs">
           Amount ($)
         </Label>
         <Input
@@ -38,6 +39,7 @@ export function DCAEntryRow({ entry, index, onUpdate, onRemove, canRemove }: DCA
           placeholder="1000"
           value={entry.amount || ''}
           onChange={(e) => onUpdate(entry.id, 'amount', parseFloat(e.target.value) || 0)}
+          className="h-9 sm:h-10 text-sm"
         />
       </div>
       {canRemove && (
@@ -45,9 +47,9 @@ export function DCAEntryRow({ entry, index, onUpdate, onRemove, canRemove }: DCA
           variant="outline"
           size="icon"
           onClick={() => onRemove(entry.id)}
-          className="shrink-0"
+          className="shrink-0 h-9 w-9 sm:h-10 sm:w-10"
         >
-          <X className="w-4 h-4" />
+          <X className="w-3 h-3 sm:w-4 sm:h-4" />
         </Button>
       )}
     </div>

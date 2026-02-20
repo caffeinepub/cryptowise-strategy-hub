@@ -2,11 +2,12 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-create-a-mobile-first-single-page-app-layout-for-cryptowise-strategy-hub-with-navigation-to-these-modules-smart-entry-exit-p-l-risk-management-dca-planner-moon-math-market-cap-and-future-value-projection",
-      "featureTitle": "Create a mobile-first single-page app layout for “CryptoWise Strategy Hub” with navigation to these modules: Smart Entry & Exit (P&L), Risk Management, DCA Planner, Moon Math (Market Cap), and Future Value Projection.",
+      "featureId": "feature-investigate-and-resolve-the-failed-to-fetch-error-occurring-in-the-application-by-checking-network-requests-api-endpoint-availability-cors-configuration-and-error-handling-in-the-coingecko-service-and-react-query-hooks",
+      "featureTitle": "Investigate and resolve the 'Failed to fetch' error occurring in the application by checking network requests, API endpoint availability, CORS configuration, and error handling in the CoinGecko service and React Query hooks",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/layout/AppShell.tsx"
+        "frontend/src/components/coins/CoinSearchSelect.tsx",
+        "frontend/src/hooks/useCoinGecko.ts",
+        "frontend/src/services/coingecko.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -21,11 +22,14 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-implement-the-smart-entry-exit-engine-p-l-module-with-inputs-investment-amount-usd-buy-price-sell-price-target-and-trading-fees-and-dynamic-outputs-token-quantity-net-profit-after-fees-and-roi-percentage",
-      "featureTitle": "Implement the Smart Entry & Exit Engine (P&L) module with inputs: Investment Amount (USD), Buy Price, Sell Price (Target), and Trading Fees (%), and dynamic outputs: Token Quantity, Net Profit (after fees), and ROI Percentage.",
+      "featureId": "feature-add-error-boundary-components-and-improve-error-handling-in-usecoingecko-hooks-to-gracefully-handle-network-failures-and-display-user-friendly-error-messages-instead-of-generic-fetch-failures",
+      "featureTitle": "Add error boundary components and improve error handling in useCoinGecko hooks to gracefully handle network failures and display user-friendly error messages instead of generic fetch failures",
       "files": [
-        "frontend/src/lib/calculators/pnl.ts",
-        "frontend/src/lib/format.ts",
+        "frontend/src/App.tsx",
+        "frontend/src/components/feedback/ApiErrorDisplay.tsx",
+        "frontend/src/components/feedback/ErrorBoundary.tsx",
+        "frontend/src/pages/modules/DecisionModule.tsx",
+        "frontend/src/pages/modules/MoonMathModule.tsx",
         "frontend/src/pages/modules/PnLModule.tsx"
       ],
       "components": [
@@ -37,194 +41,6 @@
       ],
       "testIds": [
         "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-live-price-sync-using-the-coingecko-api-so-users-can-search-select-a-coin-and-auto-fill-the-current-price-into-relevant-fields-at-minimum-the-buy-price-field-in-the-p-l-module",
-      "featureTitle": "Add live price sync using the CoinGecko API so users can search/select a coin and auto-fill the current price into relevant fields (at minimum the Buy Price field in the P&L module).",
-      "files": [
-        "frontend/src/components/coins/CoinSearchSelect.tsx",
-        "frontend/src/hooks/useCoinGecko.ts",
-        "frontend/src/pages/modules/PnLModule.tsx",
-        "frontend/src/services/coingecko.ts"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-the-risk-management-position-sizing-module-with-inputs-entry-price-stop-loss-invalidation-point-total-capital-usd-and-risk-amount-as-a-of-total-capital-and-outputs-recommended-position-size-usd-and-risk-to-reward-r-r-ratio-given-an-optional-target-sell-price-input",
-      "featureTitle": "Implement the Risk Management & Position Sizing module with inputs: Entry Price, Stop-Loss (Invalidation Point), Total Capital (USD), and Risk Amount (as a % of total capital), and outputs: recommended position size (USD) and Risk-to-Reward (R:R) ratio given an optional Target/Sell Price input.",
-      "files": [
-        "frontend/src/components/visual/RiskRewardIndicator.tsx",
-        "frontend/src/lib/calculators/risk.ts",
-        "frontend/src/pages/modules/RiskModule.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-the-advanced-dca-planner-module-with-an-average-down-tool-supporting-5-entry-lines-where-each-line-includes-buy-price-and-amount-usd-and-outputs-total-invested-total-tokens-accumulated-and-new-average-entry-price",
-      "featureTitle": "Implement the Advanced DCA Planner module with an Average Down tool supporting 5+ entry lines where each line includes Buy Price and Amount (USD), and outputs: total invested, total tokens accumulated, and new average entry price.",
-      "files": [
-        "frontend/src/components/forms/DCAEntryRow.tsx",
-        "frontend/src/lib/calculators/dca.ts",
-        "frontend/src/pages/modules/DCAModule.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-5"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-the-moon-math-market-cap-reality-check-module-that-allows-selecting-coin-a-and-coin-b-and-calculates-the-implied-coin-a-price-if-coin-a-reached-coin-b-s-market-cap-along-with-the-implied-multiple-vs-coin-a-s-current-price",
-      "featureTitle": "Implement the “Moon Math” Market Cap Reality Check module that allows selecting Coin A and Coin B and calculates the implied Coin A price if Coin A reached Coin B’s market cap, along with the implied multiple vs Coin A’s current price.",
-      "files": [
-        "frontend/src/hooks/useCoinGecko.ts",
-        "frontend/src/lib/calculators/moonMath.ts",
-        "frontend/src/pages/modules/MoonMathModule.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-6"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-the-future-value-projection-module-with-inputs-for-initial-amount-recurring-monthly-buy-time-horizon-years-and-growth-rate-apr-and-outputs-including-projected-final-value-and-total-contributions",
-      "featureTitle": "Implement the Future Value Projection module with inputs for initial amount, recurring monthly buy, time horizon (years), and growth rate (APR %), and outputs including projected final value and total contributions.",
-      "files": [
-        "frontend/src/lib/calculators/futureValue.ts",
-        "frontend/src/pages/modules/FutureValueModule.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-7"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-no-login-mode-with-local-storage-persistence-for-all-module-inputs-and-the-user-s-latest-computed-results-including-a-one-click-reset-clear-action",
-      "featureTitle": "Implement no-login mode with local storage persistence for all module inputs and the user’s latest computed results, including a one-click reset/clear action.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/actions/ClearSavedDataButton.tsx",
-        "frontend/src/hooks/useLocalStorageState.ts",
-        "frontend/src/lib/storageKeys.ts",
-        "frontend/src/pages/modules/DCAModule.tsx",
-        "frontend/src/pages/modules/FutureValueModule.tsx",
-        "frontend/src/pages/modules/MoonMathModule.tsx",
-        "frontend/src/pages/modules/PnLModule.tsx",
-        "frontend/src/pages/modules/RiskModule.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-8"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-a-one-click-share-feature-that-generates-a-shareable-trade-plan-image-summary-for-the-currently-active-module-at-minimum-for-the-p-l-module-and-lets-the-user-download-it-as-an-image",
-      "featureTitle": "Add a “One-Click Share” feature that generates a shareable “Trade Plan” image/summary for the currently active module (at minimum for the P&L module) and lets the user download it as an image.",
-      "files": [
-        "frontend/src/components/share/ShareTradePlanButton.tsx",
-        "frontend/src/components/share/TradePlanCard.tsx",
-        "frontend/src/pages/modules/PnLModule.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-9"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-apply-a-consistent-dark-mode-by-default-glassmorphism-ui-using-tailwind-styling-and-shadcn-components-with-a-coherent-visual-theme-colors-typography-spacing-suitable-for-a-crypto-trading-utility",
-      "featureTitle": "Apply a consistent dark-mode-by-default glassmorphism UI using Tailwind styling and Shadcn components, with a coherent visual theme (colors, typography, spacing) suitable for a crypto trading utility.",
-      "files": [
-        "frontend/index.html",
-        "frontend/src/App.tsx",
-        "frontend/src/components/layout/GlassCard.tsx",
-        "frontend/src/index.css",
-        "frontend/tailwind.config.js"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-10"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-required-generated-static-images-logo-and-background-and-reference-them-from-the-frontend-as-static-assets-under-frontend-public-assets-generated",
-      "featureTitle": "Add required generated static images (logo and background) and reference them from the frontend as static assets under frontend/public/assets/generated.",
-      "files": [
-        "frontend/src/components/branding/AppLogo.tsx",
-        "frontend/src/components/layout/AppShell.tsx",
-        "frontend/src/index.css"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-11"
       ],
       "confidence": "high"
     }

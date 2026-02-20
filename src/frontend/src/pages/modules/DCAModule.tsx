@@ -7,9 +7,12 @@ import { ShareTradePlanButton } from '@/components/share/ShareTradePlanButton';
 import { TradePlanCard } from '@/components/share/TradePlanCard';
 import { DCAEntryRow } from '@/components/forms/DCAEntryRow';
 import { useLocalStorageState } from '@/hooks/useLocalStorageState';
+import { useOnlineStatus } from '@/hooks/useOnlineStatus';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { STORAGE_KEYS } from '@/lib/storageKeys';
 import { calculateDCA, type DCAEntry } from '@/lib/calculators/dca';
-import { formatUSD, formatTokens } from '@/lib/format';
+import { formatCurrency, formatToken } from '@/lib/format';
+import { SEO_CONFIG } from '@/lib/seo';
 import { TrendingDown, Plus, AlertCircle } from 'lucide-react';
 
 interface DCAState {
@@ -27,6 +30,9 @@ const defaultState: DCAState = {
 export function DCAModule() {
   const [state, setState] = useLocalStorageState(STORAGE_KEYS.DCA, defaultState);
   const cardRef = useRef<HTMLDivElement | null>(null);
+  const isOnline = useOnlineStatus();
+  
+  usePageMeta(SEO_CONFIG.dca);
 
   const outputs = calculateDCA(state.entries);
   const isValid = outputs.totalTokens > 0;
@@ -54,20 +60,20 @@ export function DCAModule() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <GlassCard>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingDown className="w-5 h-5" />
+        <CardHeader className="px-4 sm:px-6 py-4 sm:py-6">
+          <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <TrendingDown className="w-4 h-4 sm:w-5 sm:h-5" />
             Advanced DCA Planner
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-xs sm:text-sm">
             Calculate your average entry price across multiple buy-ins
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4 sm:space-y-6 px-4 sm:px-6 pb-4 sm:pb-6">
           {/* Entry Rows */}
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             {state.entries.map((entry, index) => (
               <DCAEntryRow
                 key={entry.id}
@@ -81,26 +87,26 @@ export function DCAModule() {
           </div>
 
           {/* Add Entry Button */}
-          <Button onClick={addEntry} variant="outline" className="w-full">
-            <Plus className="w-4 h-4 mr-2" />
+          <Button onClick={addEntry} variant="outline" className="w-full text-xs sm:text-sm h-9 sm:h-10">
+            <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
             Add Entry
           </Button>
 
           {/* Outputs */}
           {isValid ? (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-border/50">
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Total Invested</p>
-                  <p className="text-2xl font-bold">{formatUSD(outputs.totalInvested)}</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-4 border-t border-border/50">
+                <div className="space-y-1 min-w-0">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Total Invested</p>
+                  <p className="text-xl sm:text-2xl font-bold truncate">{formatCurrency(outputs.totalInvested)}</p>
                 </div>
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Total Tokens</p>
-                  <p className="text-2xl font-bold">{formatTokens(outputs.totalTokens)}</p>
+                <div className="space-y-1 min-w-0">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Total Tokens</p>
+                  <p className="text-xl sm:text-2xl font-bold truncate">{formatToken(outputs.totalTokens)}</p>
                 </div>
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Average Entry Price</p>
-                  <p className="text-2xl font-bold text-primary">{formatUSD(outputs.averageEntryPrice)}</p>
+                <div className="space-y-1 min-w-0">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Average Entry Price</p>
+                  <p className="text-xl sm:text-2xl font-bold text-primary truncate">{formatCurrency(outputs.averageEntryPrice)}</p>
                 </div>
               </div>
 
@@ -112,7 +118,7 @@ export function DCAModule() {
           ) : (
             <Alert>
               <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
+              <AlertDescription className="text-xs sm:text-sm">
                 Enter valid buy prices and amounts to see your DCA calculation
               </AlertDescription>
             </Alert>
@@ -127,9 +133,9 @@ export function DCAModule() {
             ref={cardRef}
             title="DCA Strategy Plan"
             data={[
-              { label: 'Total Invested', value: formatUSD(outputs.totalInvested) },
-              { label: 'Total Tokens', value: formatTokens(outputs.totalTokens) },
-              { label: 'Average Entry', value: formatUSD(outputs.averageEntryPrice), highlight: true },
+              { label: 'Total Invested', value: formatCurrency(outputs.totalInvested) },
+              { label: 'Total Tokens', value: formatToken(outputs.totalTokens) },
+              { label: 'Average Entry', value: formatCurrency(outputs.averageEntryPrice), highlight: true },
               { label: 'Number of Entries', value: state.entries.filter(e => e.buyPrice > 0 && e.amount > 0).length.toString() },
             ]}
           />

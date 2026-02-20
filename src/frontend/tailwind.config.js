@@ -9,12 +9,20 @@ export default {
     theme: {
         container: {
             center: true,
-            padding: '2rem',
+            padding: {
+                DEFAULT: '1rem',
+                sm: '1.5rem',
+                lg: '2rem',
+            },
             screens: {
                 '2xl': '1400px'
             }
         },
         extend: {
+            screens: {
+                'xs': '360px',
+                'sm': '420px',
+            },
             fontFamily: {
                 sans: ['Inter', 'system-ui', 'sans-serif'],
                 display: ['Space Grotesk', 'Inter', 'sans-serif'],
@@ -70,6 +78,12 @@ export default {
                     border: 'oklch(var(--sidebar-border))',
                     ring: 'oklch(var(--sidebar-ring))'
                 }
+            },
+            spacing: {
+                'safe-top': 'env(safe-area-inset-top)',
+                'safe-bottom': 'env(safe-area-inset-bottom)',
+                'safe-left': 'env(safe-area-inset-left)',
+                'safe-right': 'env(safe-area-inset-right)',
             },
             borderRadius: {
                 lg: 'var(--radius)',

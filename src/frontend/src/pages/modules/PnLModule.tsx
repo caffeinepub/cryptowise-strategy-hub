@@ -6,14 +6,18 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { CoinSearchSelect } from '@/components/coins/CoinSearchSelect';
+import { ApiErrorDisplay } from '@/components/feedback/ApiErrorDisplay';
 import { ShareTradePlanButton } from '@/components/share/ShareTradePlanButton';
 import { TradePlanCard } from '@/components/share/TradePlanCard';
 import { useCoinPrice } from '@/hooks/useCoinGecko';
 import { useLocalStorageState } from '@/hooks/useLocalStorageState';
+import { useOnlineStatus } from '@/hooks/useOnlineStatus';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import { STORAGE_KEYS } from '@/lib/storageKeys';
 import { calculatePnL } from '@/lib/calculators/pnl';
 import { formatUSD, formatPercent, formatTokens } from '@/lib/format';
-import { TrendingUp, AlertCircle } from 'lucide-react';
+import { SEO_CONFIG } from '@/lib/seo';
+import { TrendingUp, AlertCircle, WifiOff } from 'lucide-react';
 
 interface PnLState {
   investmentAmount: string;
@@ -39,15 +43,18 @@ export function PnLModule() {
   const [state, setState] = useLocalStorageState(STORAGE_KEYS.PNL, defaultState);
   const [livePriceUsed, setLivePriceUsed] = useState(false);
   const cardRef = useRef<HTMLDivElement | null>(null);
+  const isOnline = useOnlineStatus();
+  
+  usePageMeta(SEO_CONFIG.pnl);
 
-  const { data: livePrice, isLoading: isPriceLoading, error: priceError } = useCoinPrice(state.selectedCoinId);
+  const { data: livePrice, isLoading: isPriceLoading, error: priceError, refetch: refetchPrice } = useCoinPrice(state.selectedCoinId);
 
   useEffect(() => {
-    if (livePrice && livePrice > 0 && !livePriceUsed) {
+    if (livePrice && livePrice > 0 && !livePriceUsed && isOnline) {
       setState(prev => ({ ...prev, buyPrice: livePrice.toString() }));
       setLivePriceUsed(true);
     }
-  }, [livePrice, livePriceUsed, setState]);
+  }, [livePrice, livePriceUsed, setState, isOnline]);
 
   const handleCoinSelect = (coinId: string, coinName: string, coinSymbol: string) => {
     setState(prev => ({
@@ -69,40 +76,46 @@ export function PnLModule() {
   const isValid = outputs.tokenQuantity > 0;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <GlassCard>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="w-5 h-5" />
+        <CardHeader className="px-4 sm:px-6 py-4 sm:py-6">
+          <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" />
             Smart Entry & Exit Engine (P&L)
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-xs sm:text-sm">
             Calculate your profit/loss with trading fees included
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4 sm:space-y-6 px-4 sm:px-6 pb-4 sm:pb-6">
           {/* Coin Selection */}
           <div className="space-y-2">
-            <Label>Select Coin (Optional - for live price)</Label>
+            <Label className="text-xs sm:text-sm">Select Coin (Optional - for live price)</Label>
             <CoinSearchSelect
               value={state.selectedCoinId}
               onSelect={handleCoinSelect}
               placeholder="Search for a coin..."
             />
-            {isPriceLoading && (
-              <p className="text-sm text-muted-foreground">Loading live price...</p>
-            )}
-            {priceError && (
-              <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>
-                  {priceError.message || 'Failed to fetch live price'}
+            {!isOnline && state.selectedCoinId && (
+              <Alert>
+                <WifiOff className="h-4 w-4" />
+                <AlertDescription className="text-xs sm:text-sm">
+                  Live price unavailable offline. Enter price manually.
                 </AlertDescription>
               </Alert>
             )}
-            {livePrice && livePrice > 0 && (
+            {isOnline && isPriceLoading && (
+              <p className="text-xs sm:text-sm text-muted-foreground">Loading live price...</p>
+            )}
+            {isOnline && priceError && (
+              <ApiErrorDisplay 
+                error={priceError as Error} 
+                onRetry={() => refetchPrice()}
+              />
+            )}
+            {isOnline && livePrice && livePrice > 0 && (
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="bg-accent/20">
+                <Badge variant="outline" className="bg-accent/20 text-xs">
                   Live Price: {formatUSD(livePrice)}
                 </Badge>
               </div>
@@ -110,20 +123,21 @@ export function PnLModule() {
           </div>
 
           {/* Inputs */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div className="space-y-2">
-              <Label htmlFor="investment">Investment Amount ($)</Label>
+              <Label htmlFor="investment" className="text-xs sm:text-sm">Investment Amount ($)</Label>
               <Input
                 id="investment"
                 type="number"
                 placeholder="1000"
                 value={state.investmentAmount}
                 onChange={(e) => setState(prev => ({ ...prev, investmentAmount: e.target.value }))}
+                className="h-9 sm:h-10 text-sm"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="buyPrice">Buy Price ($)</Label>
+              <Label htmlFor="buyPrice" className="text-xs sm:text-sm">Buy Price ($)</Label>
               <Input
                 id="buyPrice"
                 type="number"
@@ -131,11 +145,12 @@ export function PnLModule() {
                 step="0.00000001"
                 value={state.buyPrice}
                 onChange={(e) => setState(prev => ({ ...prev, buyPrice: e.target.value }))}
+                className="h-9 sm:h-10 text-sm"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="sellPrice">Sell Price / Target ($)</Label>
+              <Label htmlFor="sellPrice" className="text-xs sm:text-sm">Sell Price / Target ($)</Label>
               <Input
                 id="sellPrice"
                 type="number"
@@ -143,11 +158,12 @@ export function PnLModule() {
                 step="0.00000001"
                 value={state.sellPrice}
                 onChange={(e) => setState(prev => ({ ...prev, sellPrice: e.target.value }))}
+                className="h-9 sm:h-10 text-sm"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="fees">Trading Fees (%)</Label>
+              <Label htmlFor="fees" className="text-xs sm:text-sm">Trading Fees (%)</Label>
               <Input
                 id="fees"
                 type="number"
@@ -155,26 +171,27 @@ export function PnLModule() {
                 step="0.01"
                 value={state.tradingFees}
                 onChange={(e) => setState(prev => ({ ...prev, tradingFees: e.target.value }))}
+                className="h-9 sm:h-10 text-sm"
               />
             </div>
           </div>
 
           {/* Outputs */}
           {isValid ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-border/50">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-4 border-t border-border/50">
               <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">Token Quantity</p>
-                <p className="text-2xl font-bold">{formatTokens(outputs.tokenQuantity)}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Token Quantity</p>
+                <p className="text-xl sm:text-2xl font-bold">{formatTokens(outputs.tokenQuantity)}</p>
               </div>
               <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">Net Profit</p>
-                <p className={`text-2xl font-bold ${outputs.netProfit >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                <p className="text-xs sm:text-sm text-muted-foreground">Net Profit</p>
+                <p className={`text-xl sm:text-2xl font-bold ${outputs.netProfit >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                   {formatUSD(outputs.netProfit)}
                 </p>
               </div>
               <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">ROI</p>
-                <p className={`text-2xl font-bold ${outputs.roi >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                <p className="text-xs sm:text-sm text-muted-foreground">ROI</p>
+                <p className={`text-xl sm:text-2xl font-bold ${outputs.roi >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                   {formatPercent(outputs.roi)}
                 </p>
               </div>
@@ -182,7 +199,7 @@ export function PnLModule() {
           ) : (
             <Alert>
               <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
+              <AlertDescription className="text-xs sm:text-sm">
                 Enter valid values to see your P&L calculation
               </AlertDescription>
             </Alert>
